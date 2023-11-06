@@ -105,4 +105,12 @@ public class TPSController : MonoBehaviour
             _controller.Move(moveDirection.normalized * _playerSpeed * Time.deltaTime);
         }
     }
+    void OnTriggerEnter(Collider collider) 
+    {
+        if (collider.gameObject.tag == "DeadZone")
+        {
+            Debug.Log("Game Over");
+            _animator.SetTrigger("IsDead");
+        }
+    }
 }
