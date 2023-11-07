@@ -9,6 +9,7 @@ public class TPSController : MonoBehaviour
     private Transform _camera;
     private float _horizontal;
     private float _vertical;
+    public int Hp = 1;
    
    
     [SerializeField] private float _playerSpeed = 5;
@@ -105,7 +106,7 @@ public class TPSController : MonoBehaviour
             _controller.Move(moveDirection.normalized * _playerSpeed * Time.deltaTime);
         }
     }
-    void OnTriggerEnter(Collider collider) 
+     void OnTriggerEnter(Collider collider) 
     {
         if (collider.gameObject.tag == "DeadZone")
         {
