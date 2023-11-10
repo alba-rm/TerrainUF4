@@ -9,7 +9,7 @@ public class TPSController : MonoBehaviour
     private Transform _camera;
     private float _horizontal;
     private float _vertical;
-    public int Hp = 1;
+
    
    
     [SerializeField] private float _playerSpeed = 5;
@@ -25,12 +25,17 @@ public class TPSController : MonoBehaviour
     [SerializeField] private float _sensorRadius = 0.2f;
     [SerializeField] private LayerMask _groundLayer;
     private bool _isGrounded;
+    public bool canMove;
 
+
+    
  void Awake()
     {
+        
         _controller = GetComponent<CharacterController>();
         _camera = Camera.main.transform;
         _animator = GetComponentInChildren<Animator>();
+        canMove = true;
     
     }
 
@@ -39,7 +44,7 @@ public class TPSController : MonoBehaviour
     {
         _horizontal = Input.GetAxisRaw("Horizontal");
         _vertical = Input.GetAxisRaw("Vertical");
-       if(Input.GetButton("Fire2"))
+       /*if(Input.GetButton("Fire2"))
         {
             AimMovement();
         
@@ -48,13 +53,20 @@ public class TPSController : MonoBehaviour
         else
         {
             Movement();
-        }
-        
+        }*/
+    
+        if (canMove)
+        {
+        PlayerMovement();
         Jump();
+        }
+    
+
         
     }
 
-    void Movement()
+
+    /*void Movement()
     {
         Vector3 direction = new Vector3(_horizontal, 0, _vertical);
         _animator.SetFloat("VelX", 0);
@@ -68,13 +80,14 @@ public class TPSController : MonoBehaviour
             Vector3 moveDirection = Quaternion.Euler(0,targetAngle, 0) * Vector3.forward;
             _controller.Move(moveDirection.normalized * _playerSpeed * Time.deltaTime);
         }
-    }
+    }*/
     void Jump()
     {
+        
         _isGrounded = Physics.CheckSphere(_sensorPosition.position, _sensorRadius, _groundLayer);
         if(_isGrounded && _playerGravity.y < 0)
         {
-            _playerGravity.y = 0;
+            _playerGravity.y = -2;
             _animator.SetBool("IsJumping", false);
 
         }
@@ -89,8 +102,9 @@ public class TPSController : MonoBehaviour
         
         
     }
-     void AimMovement()
+     void PlayerMovement()
     {
+        
         Vector3 direction = new Vector3(_horizontal, 0, _vertical);
         _animator.SetFloat("VelX", _horizontal);
         _animator.SetFloat("VelZ", _vertical);
@@ -100,8 +114,7 @@ public class TPSController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, smoothAngle, 0);
 
         if(direction != Vector3.zero)
-        {
-            
+        {  
             Vector3 moveDirection = Quaternion.Euler(0,targetAngle, 0) * Vector3.forward;
             _controller.Move(moveDirection.normalized * _playerSpeed * Time.deltaTime);
         }
@@ -110,8 +123,11 @@ public class TPSController : MonoBehaviour
     {
         if (collider.gameObject.tag == "DeadZone")
         {
+            canMove = false;
             Debug.Log("Game Over");
             _animator.SetTrigger("IsDead");
+
         }
+        
     }
 }
